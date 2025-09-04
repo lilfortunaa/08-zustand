@@ -6,16 +6,44 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
+export async function generateMetadata({ params }: Props) {
+const { id } = await params
+  const note = await fetchNoteById(id)
+  
+    const pageTitle = note?.title
+    ? `${note.title} | NoteHub`
+      : 'Note details | NoteHub';
+  
+    const pageDescription = note?.description
+      ? note.description
+      : 'Browse and organize all your notes in NoteHub.';
+  
+    return {
+      title: pageTitle,
+      description: pageDescription,
+      openGraph: {
+      title: pageTitle,
+      description:pageDescription,
+      url:`/notes/${id}`,
+      images: [{
+        url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
+        width: 425,
+        height:283,
+        alt:'NoteHub Preview',
+      }]
+    }
+    }
+}
+
 export default async function NotePage({ params }: Props) {
   const { id } = await params;
 
   const queryClient = new QueryClient();
-
-  const note = await fetchNoteById(id); // получаем объект note
+  const note = await fetchNoteById(id); 
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NoteDetailsClient note={note} /> {/* передаём note, а не noteId */}
+      <NoteDetailsClient note={note} />
     </QueryClientProvider>
   );
 }

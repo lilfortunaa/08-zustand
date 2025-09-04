@@ -19,6 +19,43 @@ interface NotesPageProps {
   params: { slug?: string[] };
 }
 
+export async function generateMetadata({ params }: NotesPageProps) {
+  const resolvedParams = await Promise.resolve(params); // <-- важливо
+  const slug = resolvedParams?.slug ?? [];
+
+  const tag =
+    slug[0] && slug[0] !== 'All' && allowedTags.includes(slug[0] as NoteTag)
+      ? slug[0]
+      : undefined;
+
+  const pageTitle = tag
+    ? `Notes filtered by ${tag} | NoteHub`
+    : 'All Notes | NoteHub';
+
+  const pageDescription = tag
+    ? `Browse and organize your notes filtered by ${tag}.`
+    : 'Browse and organize all your notes in NoteHub.';
+
+  return {
+    title: pageTitle,
+    description: pageDescription,
+    openGraph: {
+      title: pageTitle,
+      description: pageDescription,
+      url: tag ? `/notes/filter/${tag}` : '/notes/filter/All',
+      images: [
+        {
+          url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
+          width: 425,
+          height: 283,
+          alt: 'NoteHub Preview',
+        },
+      ],
+    },
+  };
+}
+
+
 export default async function NotesPage(props: NotesPageProps) {
   const params = await Promise.resolve(props.params);
   const slug = params?.slug ?? [];
