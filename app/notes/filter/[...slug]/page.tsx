@@ -6,6 +6,7 @@ import {
   dehydrate,
   QueryClient,
 } from '@tanstack/react-query';
+import {Metadata} from 'next';
 
 const allowedTags: NoteTag[] = [
   'Todo',
@@ -19,8 +20,8 @@ interface NotesPageProps {
   params: { slug?: string[] };
 }
 
-export async function generateMetadata({ params }: NotesPageProps) {
-  const resolvedParams = await Promise.resolve(params); // <-- важливо
+export async function generateMetadata({ params }: NotesPageProps):Promise<Metadata> {
+  const resolvedParams = await Promise.resolve(params); 
   const slug = resolvedParams?.slug ?? [];
 
   const tag =
