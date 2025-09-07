@@ -16,28 +16,24 @@ export default function NoteModalClient({ noteId, dehydratedState }: Props) {
   const [isOpen, setIsOpen] = useState(true);
   const router = useRouter();
 
+  const [queryClient] = useState(() => new QueryClient());
+
   useEffect(() => {
-    setIsOpen(true);
-  }, [noteId]);
+    if (dehydratedState) {
+      hydrate(queryClient, dehydratedState);
+    }
+  }, [dehydratedState, queryClient]);
 
+  const handleClose = () => {
+    setIsOpen(false);
+    router.back(); 
+  };
 
-  const queryClient = new QueryClient();
-
-
-  if (dehydratedState) {
-    hydrate(queryClient, dehydratedState);
-  }
-
-
-  if (!isOpen) {
-    router.back();
-    return null;
-  }
-
+  if (!isOpen) return null;
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NoteModalContent noteId={noteId} onClose={() => setIsOpen(false)} />
+      <NoteModalContent noteId={noteId} onClose={handleClose} />
     </QueryClientProvider>
   );
 }

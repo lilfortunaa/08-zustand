@@ -3,15 +3,13 @@
 import { Note } from '@/types/note';
 import css from '../../../components/NoteDetails/NoteDetails.module.css';
 
+
 interface NoteDetailsClientProps {
   note: Note;
 }
 
 export default function NoteDetailsClient({ note }: NoteDetailsClientProps) {
   if (!note) return <p>Something went wrong.</p>;
-
-
-  console.log("Note in NoteDetailsClient:", note);
 
 
   const formattedDate = new Date(note.createdAt).toLocaleString();
